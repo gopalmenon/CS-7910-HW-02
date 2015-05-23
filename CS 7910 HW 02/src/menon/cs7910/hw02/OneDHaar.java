@@ -21,7 +21,7 @@ public class OneDHaar {
 	 * Generate the ordered Haar wavelet transform in an array
 	 * @param sample
 	 */
-	public static void orderedFastHaarWaveletTransform(double[] sample, boolean truncateData) {
+	public static void orderedFastHaarWaveletTransform(final double[] sample, boolean truncateData) {
 		
 		double[] transform = null;
 		if (truncateData) {
@@ -75,6 +75,36 @@ public class OneDHaar {
 			transform = getPaddedArray(sample);
 		}
 		
+		int numberOfIterations = Double.valueOf(Math.log10(transform.length)/Math.log10(2.0)).intValue();
+		int indexIncrement = 1;
+		int coefficientJumpFactor = 2;
+		int numberOfSampleValues = transform.length;
+		int currentStepIndex = 0, currentWaveletIndex = 0;
+		double currentStepValue = 0.0, currentWaveletValue = 0.0;
+		
+		for (int iterationCounter = 0; iterationCounter < numberOfIterations; ++iterationCounter) {
+			
+			numberOfSampleValues /= 2;
+			
+			for (int transformCoefficientsCounter = 0; transformCoefficientsCounter < numberOfSampleValues; ++transformCoefficientsCounter) {
+				
+				currentStepIndex = coefficientJumpFactor * transformCoefficientsCounter;
+				currentWaveletIndex = currentStepIndex + indexIncrement;
+
+				currentStepValue = (transform[currentStepIndex] + transform[currentWaveletIndex])/2.0;
+				currentWaveletValue = (transform[currentStepIndex] - transform[currentWaveletIndex])/2.0;
+				
+				transform[currentStepIndex] = currentStepValue;
+				transform[currentWaveletIndex] = currentWaveletValue;
+			
+			}
+			
+			indexIncrement = coefficientJumpFactor;
+			coefficientJumpFactor *= 2;
+			
+		}
+		
+		inPlaceFastHaarWaveletTransform = transform;
 		inPlaceTransformComplete = true;
 	}
 	
@@ -106,7 +136,7 @@ public class OneDHaar {
 	 * @return array that is the next integral multiple of a power of 2. Return the same array if it is already
 	 * of size that is a power of 2.
 	 */
-	private static double[] getPaddedArray(double[] sample) {
+	private static double[] getPaddedArray(final double[] sample) {
 		
 		int sampleSize = sample.length;
 		double sampleSizeLg = Math.log10(sampleSize)/Math.log10(2.0);
@@ -114,7 +144,7 @@ public class OneDHaar {
 		
 		//Return input if already the size is an integral power of 2
 		if (sampleSizeLgInt == sampleSizeLg) {
-			return sample;
+			return Arrays.copyOf(sample, sample.length);
 		}
 		
 		//Create an array of size the next integral power of 2
@@ -136,7 +166,7 @@ public class OneDHaar {
 	 * @return array that is the next lower integral multiple of a power of 2. Return the same array if it is already
 	 * of size that is a power of 2.
 	 */
-	private static double[] getTruncatedArray(double[] sample) {
+	private static double[] getTruncatedArray(final double[] sample) {
 		
 		int sampleSize = sample.length;
 		double sampleSizeLg = Math.log10(sampleSize)/Math.log10(2.0);
@@ -144,7 +174,7 @@ public class OneDHaar {
 		
 		//Return input if already the size is an integral power of 2
 		if (sampleSizeLgInt == sampleSizeLg) {
-			return sample;
+			return Arrays.copyOf(sample, sample.length);
 		}
 		
 		//Create an array of size the next integral power of 2

@@ -116,7 +116,6 @@ public class OneDHaarClient {
 			}
 		}
 		
-		
         double[] sample_00 = {5, 1, 2, 8};
         double[] sample_01 = {3, 1, 0, 4, 8, 6, 9, 9};
         
@@ -124,8 +123,9 @@ public class OneDHaarClient {
         testOrderedFHWT(sample_01, truncateData);
         testOrderedFHWT(getBeehiveTemperatures(), truncateData);
         
-        //testInPlaceFHWT(sample_00);
-        //testInPlaceFHWT(sample_01);
+        testInPlaceFHWT(sample_00, truncateData);
+        testInPlaceFHWT(sample_01, truncateData);
+        testInPlaceFHWT(getBeehiveTemperatures(), truncateData);
 
 	}
 
