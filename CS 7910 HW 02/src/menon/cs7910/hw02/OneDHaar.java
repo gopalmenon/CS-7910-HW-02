@@ -21,9 +21,15 @@ public class OneDHaar {
 	 * Generate the ordered Haar wavelet transform in an array
 	 * @param sample
 	 */
-	public static void orderedFastHaarWaveletTransform(double[] sample) {
+	public static void orderedFastHaarWaveletTransform(double[] sample, boolean truncateData) {
 		
-		double[] transform = getPaddedArray(sample);
+		double[] transform = null;
+		if (truncateData) {
+			transform = getTruncatedArray(sample);
+		} else {
+			transform = getPaddedArray(sample);
+		}
+		
 		int numberOfIterations = Double.valueOf(Math.log10(transform.length)/Math.log10(2.0)).intValue(), numberOfTransformCoefficients = 0;
 		
 		//Do number of iterations equal to the power of 2
@@ -60,9 +66,14 @@ public class OneDHaar {
 	 * Generate the in place Haar wavelet transform in an array
 	 * @param sample
 	 */
-	public static void inPlaceFastHaarWaveletTransform(double[] sample) {
-		
-		double[] paddedSample = getPaddedArray(sample);
+	public static void inPlaceFastHaarWaveletTransform(double[] sample, boolean truncateData) {
+			
+		double[] transform = null;
+		if (truncateData) {
+			transform = getTruncatedArray(sample);
+		} else {
+			transform = getPaddedArray(sample);
+		}
 		
 		inPlaceTransformComplete = true;
 	}
@@ -107,13 +118,48 @@ public class OneDHaar {
 		}
 		
 		//Create an array of size the next integral power of 2
-		int paddedSize = Double.valueOf(Math.ceil(sampleSizeLg)).intValue();
+		int paddedSize = Double.valueOf(Math.pow(2, Math.ceil(sampleSizeLg))).intValue();
 		double[] returnValue = new double[paddedSize];
 		
 		//Fill the initial part of the array with the input sample
 		int arrayIndex = 0;
 		for (double doubleValue : sample) {
 			returnValue[arrayIndex++] = doubleValue;
+		}
+		
+		return returnValue;
+		
+	}
+	
+	/**
+	 * @param sample
+	 * @return array that is the next lower integral multiple of a power of 2. Return the same array if it is already
+	 * of size that is a power of 2.
+	 */
+	private static double[] getTruncatedArray(double[] sample) {
+		
+		int sampleSize = sample.length;
+		double sampleSizeLg = Math.log10(sampleSize)/Math.log10(2.0);
+		int sampleSizeLgInt = Double.valueOf(sampleSizeLg).intValue();
+		
+		//Return input if already the size is an integral power of 2
+		if (sampleSizeLgInt == sampleSizeLg) {
+			return sample;
+		}
+		
+		//Create an array of size the next integral power of 2
+		int truncatedSize = Double.valueOf(Math.pow(2, Math.ceil(sampleSizeLg) - 1)).intValue();
+		double[] returnValue = new double[truncatedSize];
+		
+		//Fill the initial part of the array with the input sample
+		int arrayIndex = 0;
+		for (double doubleValue : sample) {
+			
+			if (arrayIndex == returnValue.length) {
+				break;
+			}
+			returnValue[arrayIndex] = doubleValue;
+			arrayIndex++;
 		}
 		
 		return returnValue;
