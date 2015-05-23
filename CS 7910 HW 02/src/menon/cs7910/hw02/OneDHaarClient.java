@@ -5,11 +5,12 @@ public class OneDHaarClient {
 	public static final String ORIGINAL_SAMPLE_LABEL = "Original sample: ";
 	public static final String ORDERED_FHWT_LABEL = "Ordered FHWT: ";
 	public static final String IN_PLACE_FHWT_LABEL = "InPlace FHWT: ";
+	public static final String NEW_LINE = "\n";
 	
 	public static void testOrderedFHWT(double[] sample) {
 		
 		//Print the input sample
-		System.out.print(ORIGINAL_SAMPLE_LABEL);
+		System.out.println(NEW_LINE + ORIGINAL_SAMPLE_LABEL);
 		for (double doubleValue : sample) {
 			System.out.print(doubleValue + " ");
 		}
@@ -23,7 +24,7 @@ public class OneDHaarClient {
 			double[] transform = OneDHaar.getOrderedFastHaarWaveletTransform();
 			
 			//Print the transform values
-			System.out.print(ORDERED_FHWT_LABEL);
+			System.out.print(NEW_LINE + ORDERED_FHWT_LABEL);
 			for (double doubleValue : transform) {
 				System.out.print(doubleValue + " ");
 			}
@@ -39,7 +40,7 @@ public class OneDHaarClient {
 	public static void testInPlaceFHWT(double[] sample) {
 		
 		//Print the input sample
-		System.out.print(ORIGINAL_SAMPLE_LABEL);
+		System.out.println(NEW_LINE + ORIGINAL_SAMPLE_LABEL);
 		for (double doubleValue : sample) {
 			System.out.print(doubleValue + " ");
 		}
@@ -53,7 +54,7 @@ public class OneDHaarClient {
 			double[] transform = OneDHaar.getInPlaceFastHaarWaveletTransform();
 			
 			//Print the transform values
-			System.out.print(IN_PLACE_FHWT_LABEL);
+			System.out.print(NEW_LINE + IN_PLACE_FHWT_LABEL);
 			for (double doubleValue : transform) {
 				System.out.print(doubleValue + " ");
 			}
